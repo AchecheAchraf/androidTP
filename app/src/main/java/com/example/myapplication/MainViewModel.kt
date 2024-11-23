@@ -13,6 +13,7 @@ class MainViewModel : ViewModel() {
     val series = MutableStateFlow<List<Serie>>(listOf())
 
     val apikey= "474915450c136f48794281389330d269"
+    val serieDetails = MutableStateFlow<Serie?>(null)
 
 
     val service = Retrofit.Builder()
@@ -20,6 +21,8 @@ class MainViewModel : ViewModel() {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create(TmdbAPI::class.java)
+
+
 
     fun searchMovies(){
         viewModelScope.launch{
@@ -77,6 +80,28 @@ class MainViewModel : ViewModel() {
             series.value.filter { it.name.contains(query, ignoreCase = true) }
         }
         series.value = filteredList
+    }
+
+    fun fetchMovieCredits(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                val credits = service.getMovieCredits(movieId, apikey)
+                actors.value = credits.cast // Store only the cast (actors)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun fetchSerieCredits(serieId: Int) {
+        viewModelScope.launch {
+            try {
+                val credits = service.getSerieCredits(serieId, apikey)
+                actors.value = credits.cast // Store only the cast (actors)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
 }

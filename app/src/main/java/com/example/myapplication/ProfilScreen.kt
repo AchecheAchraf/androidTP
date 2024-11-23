@@ -94,7 +94,7 @@ fun ConnectButton(navController: NavController) {
 @Composable
 fun ContactInfo() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally, // Align content to the center
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(8.dp) // Space between each row
     ) {
         // Email Row
@@ -105,7 +105,7 @@ fun ContactInfo() {
             Icon(
                 imageVector = Icons.Default.Email, // Default Email icon
                 contentDescription = "Email Icon",
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(35.dp),
                 tint = Color.Unspecified // Ensure the original color of the email icon is used
             )
             Text(text = "achecheachraf@gmail.com", fontSize = 14.sp)
@@ -119,7 +119,7 @@ fun ContactInfo() {
             Image(
                 painter = painterResource(id = R.drawable.linkedin), // Custom LinkedIn icon
                 contentDescription = "LinkedIn Icon",
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(35.dp)
             )
             Text(text = "linkedin.com/in/achecheachraf", fontSize = 14.sp)
         }
@@ -140,26 +140,44 @@ fun ProfilScreen(windowClass: WindowSizeClass, navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MonImage() // The padding within MonImage will be preserved
-                    Text(buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold, // Bold style for "password"
-                                fontSize = 26.sp,
-                            )
-                        )
-                        { append("ACHECHE ") }
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 26.sp,
-                            )
-                        )
-                        { append("Achraf") }
 
-                    })
+                    // Name
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.Bold, // Bold style for "ACHECHE"
+                                    fontSize = 26.sp,
+                                )
+                            ) {
+                                append("ACHECHE ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    fontSize = 26.sp,
+                                )
+                            ) {
+                                append("Achraf")
+                            }
+                        }
+                    )
 
-                    Spacer(modifier = Modifier.height(100.dp)) // Add space between text and the button
+                    // Titles
+                    Spacer(modifier = Modifier.height(40.dp)) // Space between name and titles
+                    Text(
+                        text = "Étudiant en informatique pour la santé",
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Gray
+                    )
+                    Text(
+                        text = "Développeur Web",
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Gray
+                    )
 
-
+                    Spacer(modifier = Modifier.height(100.dp)) // Space before the button
                     ConnectButton(navController)
                     ContactInfo()
                 }
@@ -173,30 +191,52 @@ fun ProfilScreen(windowClass: WindowSizeClass, navController: NavController) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp), // Space between columns
                     verticalAlignment = Alignment.CenterVertically, // Center content vertically
-                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
                 ) {
                     // Left side: Image and Name
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp), // Space between image and text
+                        verticalArrangement = Arrangement.spacedBy(8.dp), // Space between elements
                         modifier = Modifier.weight(1f) // Take up 50% of the width
                     ) {
                         MonImageHorizontal() // Image
-                        Text(buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold, // Bold style for "ACHECHE"
-                                fontSize = 26.sp,
-                            )
-                            ) {
-                                append("ACHECHE ")
+                        // Name
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontWeight = FontWeight.Bold, // Bold style for "ACHECHE"
+                                        fontSize = 26.sp,
+                                    )
+                                ) {
+                                    append("ACHECHE ")
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontSize = 26.sp,
+                                    )
+                                ) {
+                                    append("Achraf")
+                                }
                             }
-                            withStyle(style = SpanStyle(
-                                fontSize = 26.sp,
-                            )
-                            ) {
-                                append("Achraf")
-                            }
-                        })
+                        )
+
+
+                        // Titles
+                        Text(
+                            text = "Étudiant en informatique pour la santé",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Gray
+                        )
+                        Text(
+                            text = "Développeur Web",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Gray
+                        )
                     }
 
                     // Right side: Button and Contact Info
@@ -212,5 +252,4 @@ fun ProfilScreen(windowClass: WindowSizeClass, navController: NavController) {
             }
         }
     }
-
 }

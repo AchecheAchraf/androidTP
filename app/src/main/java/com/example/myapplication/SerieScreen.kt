@@ -40,7 +40,6 @@ fun SerieScreen(navController: NavController, viewModel: MainViewModel) {
     val series by viewModel.series.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    // Fetch series when the screen is loaded
     LaunchedEffect(true) {
         viewModel.searchSeries()
     }
@@ -50,7 +49,7 @@ fun SerieScreen(navController: NavController, viewModel: MainViewModel) {
             Column {
                 Spacer(
                     modifier = Modifier
-                        .height(50.dp)
+                        .height(35.dp)
                         .background(MaterialTheme.colorScheme.primary)
                         .fillMaxWidth()
                 )
@@ -58,7 +57,7 @@ fun SerieScreen(navController: NavController, viewModel: MainViewModel) {
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     title = {
                         Text(
-                            text = "Series List",
+                            text = "Series",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     },
@@ -69,15 +68,17 @@ fun SerieScreen(navController: NavController, viewModel: MainViewModel) {
                                 searchQuery = query
                                 viewModel.filterSeries(query.text)
                             },
-                            placeholder = { Text("Search...") },
+                            placeholder = { Text("Nom de serie") },
                             modifier = Modifier
+                                .padding(horizontal = 16.dp)
                                 .width(220.dp)
                                 .height(49.dp)
-                                .background(Color(0xFFB0BEC5)),
+                                .background(Color.White, shape = MaterialTheme.shapes.medium),
                             singleLine = true,
                             colors = TextFieldDefaults.outlinedTextFieldColors(
-                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                focusedBorderColor = Color.Blue,
+                                unfocusedBorderColor = Color.Gray,
+                                textColor = Color.Black
                             ),
                             shape = MaterialTheme.shapes.medium
                         )
@@ -95,20 +96,20 @@ fun SerieScreen(navController: NavController, viewModel: MainViewModel) {
                     .fillMaxWidth()
             ) {
                 BottomNavigationItem(
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Profil") },
+                    icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
                     label = { Text("Profil") },
                     selected = currentRoute == "profil",
                     onClick = { navController.navigate("profil") }
                 )
                 BottomNavigationItem(
-                    icon = { Icon(Icons.Default.Movie, contentDescription = "Movie") },
-                    label = { Text("Movie") },
+                    icon = { Icon(Icons.Default.Movie, contentDescription = "Movies") },
+                    label = { Text("Films") },
                     selected = currentRoute == "movie",
                     onClick = { navController.navigate("movie") }
                 )
                 BottomNavigationItem(
-                    icon = { Icon(Icons.Default.Face, contentDescription = "Actor") },
-                    label = { Text("Actor") },
+                    icon = { Icon(Icons.Default.Face, contentDescription = "Actors") },
+                    label = { Text("Acteurs") },
                     selected = currentRoute == "actor",
                     onClick = { navController.navigate("actor") }
                 )
@@ -128,18 +129,19 @@ fun SerieScreen(navController: NavController, viewModel: MainViewModel) {
             contentAlignment = Alignment.Center
         ) {
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp),
+                columns = GridCells.Adaptive(minSize = 180.dp),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp)
             ) {
                 items(series) { serie ->
-                    SerieCard(serie = serie)
+                    SerieCard(serie = serie, viewModel = viewModel)
                 }
             }
         }
     }
 }
+
 
 
 

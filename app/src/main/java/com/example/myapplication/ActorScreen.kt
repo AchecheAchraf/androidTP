@@ -50,36 +50,38 @@ fun ActorScreen(navController: NavController, viewModel: MainViewModel) {
         topBar = {
 
             Column {
-                Spacer(modifier = Modifier.height(50.dp).background(MaterialTheme.colorScheme.primary) // Set the height of the bottom bar
+                Spacer(modifier = Modifier.height(35.dp).background(MaterialTheme.colorScheme.primary) // Set the height of the bottom bar
                     .fillMaxWidth())
                 TopAppBar(
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     title = {
                         Text(
-                            text = "Actors List",
+                            text = "Acteurs",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     },
                     actions = {
                         OutlinedTextField(
                             value = searchQuery,
+
                             onValueChange = { query ->
                                 searchQuery = query
                                 viewModel.filterActors(query.text) // Implement filtering
                             },
-                            placeholder = { Text("Search...") },
+                            placeholder = { Text("Nom d'acteur") },
                             modifier = Modifier
+                                .padding(horizontal = 16.dp)
                                 .width(220.dp)
-                                .height(49.dp)
-                                .background(Color(0xFFB0BEC5)),
-
+                                .height(49.dp)// Adjust the height for better design
+                                .background(Color.White, shape = MaterialTheme.shapes.medium), // Add a background with rounded shape
                             singleLine = true,
                             colors = TextFieldDefaults.outlinedTextFieldColors(
-                                focusedBorderColor = MaterialTheme.colorScheme.secondary, // Optional: Customize border color
-                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant // Optional: Customize border color
+                                focusedBorderColor = Color.Blue, // Match the desired color
+                                unfocusedBorderColor = Color.Gray,
+                                textColor = Color.Black,
+                                backgroundColor = Color.Transparent // Avoid overriding the custom background
                             ),
-                            shape = MaterialTheme.shapes.medium
-
+                            shape = MaterialTheme.shapes.medium // Rounded corners for a sleek design
                         )
                     }
                 )
@@ -91,7 +93,7 @@ fun ActorScreen(navController: NavController, viewModel: MainViewModel) {
             BottomNavigation(
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 0.dp) // Adjust the padding as needed
-                    .height(80.dp) // Set the height of the bottom bar
+                    .height(60.dp) // Set the height of the bottom bar
                     .fillMaxWidth()
             ) {
                 BottomNavigationItem(
@@ -102,19 +104,19 @@ fun ActorScreen(navController: NavController, viewModel: MainViewModel) {
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Default.Movie, contentDescription = "Movie") },
-                    label = { Text("Movie") },
+                    label = { Text("Films") },
                     selected = currentRoute == "movie",
                     onClick = { navController.navigate("movie") }
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Default.Face, contentDescription = "Actor") }, // Icon for Actor
-                    label = { Text("Actor") },
+                    label = { Text("Acteurs") },
                     selected = currentRoute == "actor",
                     onClick = { navController.navigate("actor") } // Ensure this route exists
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Default.Tv, contentDescription = "Series") }, // Icon for Series
-                    label = { Text("Serie") },
+                    label = { Text("Series") },
                     selected = currentRoute == "serie",
                     onClick = { navController.navigate("serie") } // Ensure this route exists
                 )

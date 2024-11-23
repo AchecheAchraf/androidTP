@@ -3,9 +3,11 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.*
@@ -28,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import retrofit2.Call
@@ -48,39 +49,42 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
 
     Scaffold(
         topBar = {
-
             Column {
-                Spacer(modifier = Modifier.height(50.dp).background(MaterialTheme.colorScheme.primary) // Set the height of the bottom bar
+                Spacer(modifier = Modifier.height(35.dp).background(MaterialTheme.colorScheme.primary) // Set the height of the bottom bar
                     .fillMaxWidth())
                 TopAppBar(
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     title = {
                         Text(
-                            text = "Movies List",
+                            text = "Films",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     },
                     actions = {
+
                         OutlinedTextField(
                             value = searchQuery,
+
                             onValueChange = { query ->
                                 searchQuery = query
                                 viewModel.filterMovies(query.text) // Implement filtering
                             },
-                            placeholder = { Text("Search...") },
+                            placeholder = { Text("Nom du film") },
                             modifier = Modifier
+                                .padding(horizontal = 16.dp)
                                 .width(220.dp)
-                                .height(49.dp)
-                                .background(Color(0xFFB0BEC5)),
-
+                                .height(49.dp)// Adjust the height for better design
+                                .background(Color.White, shape = MaterialTheme.shapes.medium), // Add a background with rounded shape
                             singleLine = true,
                             colors = TextFieldDefaults.outlinedTextFieldColors(
-                                focusedBorderColor = MaterialTheme.colorScheme.secondary, // Optional: Customize border color
-                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant // Optional: Customize border color
+                                focusedBorderColor = Color.Blue, // Match the desired color
+                                unfocusedBorderColor = Color.Gray,
+                                textColor = Color.Black,
+                                backgroundColor = Color.Transparent // Avoid overriding the custom background
                             ),
-                            shape = MaterialTheme.shapes.medium
-
+                            shape = MaterialTheme.shapes.medium // Rounded corners for a sleek design
                         )
+
                     }
                 )
             }
@@ -91,7 +95,7 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
             BottomNavigation(
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 0.dp) // Adjust the padding as needed
-                    .height(80.dp) // Set the height of the bottom bar
+                    .height(60.dp) // Set the height of the bottom bar
                     .fillMaxWidth()
             ) {
                 BottomNavigationItem(
@@ -102,13 +106,13 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Default.Movie, contentDescription = "Movie") },
-                    label = { Text("Movie") },
+                    label = { Text("Films") },
                     selected = currentRoute == "movie",
                     onClick = { navController.navigate("movie") }
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Default.Face, contentDescription = "Actor") }, // Icon for Actor
-                    label = { Text("Actor") },
+                    label = { Text("Acteurs") },
                     selected = currentRoute == "actor",
                     onClick = { navController.navigate("actor") } // Ensure this route exists
                 )
@@ -130,14 +134,15 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
 
 // Use LazyVerticalGrid to display movies in 2 columns
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp), // Responsive grid
+                columns = GridCells.Adaptive(minSize = 180.dp), // Responsive grid
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp)
+                    .height(350.dp)
             ) {
                 items(movies) { movie ->
                     Log.d("MovieScreen", "Movie: ${movie.title}")
-                    MovieCard(movie = movie)
+                    MovieCard(movie = movie,  viewModel = viewModel)
 
                 }
             }
