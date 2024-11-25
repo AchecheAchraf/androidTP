@@ -97,7 +97,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val credits = service.getSerieCredits(serieId, apikey)
-                actors.value = credits.cast // Store only the cast (actors)
+                actors.value = credits.cast
             } catch (e: Exception) {
                 e.printStackTrace()
             }
