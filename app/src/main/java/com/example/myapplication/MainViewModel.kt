@@ -2,31 +2,30 @@ package com.example.myapplication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
+
     val movies = MutableStateFlow<List<Movie>>(listOf())
     val actors = MutableStateFlow<List<Actor>>(listOf())
     val series = MutableStateFlow<List<Serie>>(listOf())
-
-    val apikey= "474915450c136f48794281389330d269"
     val serieDetails = MutableStateFlow<Serie?>(null)
 
+    private val apiKey = "474915450c136f48794281389330d269"
 
-    val service = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
-        .create(TmdbAPI::class.java)
-
-
-
-    fun searchMovies(){
-        viewModelScope.launch{
-            movies.value = service.getFilms(apikey).results
+    fun searchMovies() {
+        viewModelScope.launch {
+            try {
+                movies.value = repository.getMovies(apiKey)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -39,19 +38,16 @@ class MainViewModel : ViewModel() {
         movies.value = filteredList
     }
 
-    // Function to fetch actors
     fun searchActors() {
         viewModelScope.launch {
             try {
-                val actorResponse = service.getActors(apikey)
-                actors.value = actorResponse.results  // Correctly accessing the results
+                actors.value = repository.getActors(apiKey)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    // Function to filter actors by name
     fun filterActors(query: String) {
         val filteredList = if (query.isEmpty()) {
             actors.value
@@ -64,15 +60,13 @@ class MainViewModel : ViewModel() {
     fun searchSeries() {
         viewModelScope.launch {
             try {
-                val seriesResponse = service.getSeries(apikey)
-                series.value = seriesResponse.results
+                series.value = repository.getSeries(apiKey)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    // Filter series by name
     fun filterSeries(query: String) {
         val filteredList = if (query.isEmpty()) {
             series.value
@@ -85,8 +79,7 @@ class MainViewModel : ViewModel() {
     fun fetchMovieCredits(movieId: Int) {
         viewModelScope.launch {
             try {
-                val credits = service.getMovieCredits(movieId, apikey)
-                actors.value = credits.cast // Store only the cast (actors)
+                actors.value = repository.getMovieCredits(movieId, apiKey)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -96,12 +89,11 @@ class MainViewModel : ViewModel() {
     fun fetchSerieCredits(serieId: Int) {
         viewModelScope.launch {
             try {
-                val credits = service.getSerieCredits(serieId, apikey)
-                actors.value = credits.cast
+                actors.value = repository.getSerieCredits(serieId, apiKey)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-
 }
+

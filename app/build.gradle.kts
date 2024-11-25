@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("plugin.serialization") version "1.9.25"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -63,6 +65,10 @@ dependencies {
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0")
     implementation ("androidx.compose.runtime:runtime-livedata:1.4.0")
     implementation ("androidx.activity:activity-compose:1.6.0")
+
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-compiler:2.52")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
 //Coroutine
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
