@@ -16,6 +16,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,14 +40,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.example.myapplication.Movie
 @Composable
-fun MovieCard(movie: Movie, viewModel: MainViewModel) {
+fun MovieCard(movie: MovieEntity, viewModel: MainViewModel) {
     var showPopup by remember { mutableStateOf(false) }
+    val isFavorite by rememberUpdatedState(movie.isFavorite)
+
+    // Handle favorite icon click
+    fun toggleFavorite() {
+        Log.d("MovieCard", "Toggling favorite status for ${movie.fiche.title}")
+        viewModel.toggleFavorite(movie) // Update the favorite status in the ViewModel or database
+    }
 
     Column(
         modifier = Modifier
@@ -51,20 +63,44 @@ fun MovieCard(movie: Movie, viewModel: MainViewModel) {
             .padding(8.dp)
             .clickable {
                 showPopup = true
-                viewModel.fetchMovieCredits(movie.id) // Fetch credits when the card is clicked
+                viewModel.fetchMovieCredits(movie.id.toInt()) // Fetch credits when the card is clicked
             }
     ) {
-        // Movie Image
-        val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}"
-        Image(
-            painter = rememberAsyncImagePainter(imageUrl),
-            contentDescription = movie.title,
-            contentScale = ContentScale.Crop,
+        // Movie Image with a Heart Icon at the top left
+        val imageUrl = "https://image.tmdb.org/t/p/w500${movie.fiche.poster_path}" // Access poster_path through fiche
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
+
                 .height(250.dp)
                 .clip(RoundedCornerShape(12.dp))
-        )
+        ) {
+            // Movie Poster Image
+            Image(
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = movie.fiche.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+
+            // Heart Icon at the top left of the image
+            Icon(
+                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = "Favorite",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .zIndex(1f)
+                    .align(Alignment.TopEnd)
+                    .clickable {
+                        toggleFavorite() // Toggle favorite status when clicked
+                        Log.d("MovieCard", "Heart clicked for ${movie.fiche.title}")
+                    },
+                tint = Color.Red // Set the color of the heart icon
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -76,7 +112,7 @@ fun MovieCard(movie: Movie, viewModel: MainViewModel) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = movie.title,
+                text = movie.fiche.title, // Access title through fiche
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -84,24 +120,21 @@ fun MovieCard(movie: Movie, viewModel: MainViewModel) {
         }
     }
 
-    // Show the popup if true
     if (showPopup) {
-        val actors by viewModel.actors.collectAsState() // Observing actors
+        val actors by viewModel.actors.collectAsState()
         AlertDialog(
             onDismissRequest = { showPopup = false },
-            title = null, // Using custom title and layout
+            title = null,
             text = {
                 MovieDetail(
-                    movie = movie,
+                    movie = movie.fiche, // Pass fiche instead of movie
                     actors = actors,
                     onClose = { showPopup = false }
                 )
             },
-            confirmButton = {} // Removed redundant confirm button
+            confirmButton = {}
         )
     }
 }
-
-
 
 

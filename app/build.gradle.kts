@@ -4,11 +4,16 @@ plugins {
     kotlin("plugin.serialization") version "1.9.25"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.room")
 }
 
 android {
     namespace = "com.example.myapplication"
     compileSdk = 34
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 
     defaultConfig {
         applicationId = "com.example.myapplication"
@@ -69,6 +74,11 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation ("androidx.room:room-ktx:2.5.2") // Replace with the latest version if different
+
 
 //Coroutine
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")

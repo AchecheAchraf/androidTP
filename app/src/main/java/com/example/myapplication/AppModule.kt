@@ -19,6 +19,8 @@ object AppModule {
             .build()
     }
 
+
+
     @Provides
     fun provideTmdbAPI(retrofit: Retrofit): TmdbAPI {
         return retrofit.create(TmdbAPI::class.java)
