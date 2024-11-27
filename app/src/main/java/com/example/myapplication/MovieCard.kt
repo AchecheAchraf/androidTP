@@ -47,15 +47,13 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.example.myapplication.Movie
 @Composable
-fun MovieCard(movie: MovieEntity, viewModel: MainViewModel) {
+fun MovieCard(
+    movie: MovieEntity,
+    onFavoriteClick: (MovieEntity) -> Unit, // Pass the lambda to handle favorite click
+    viewModel: MainViewModel
+) {
     var showPopup by remember { mutableStateOf(false) }
-    val isFavorite by rememberUpdatedState(movie.isFavorite)
-
-    // Handle favorite icon click
-    fun toggleFavorite() {
-        Log.d("MovieCard", "Toggling favorite status for ${movie.fiche.title}")
-        viewModel.toggleFavorite(movie) // Update the favorite status in the ViewModel or database
-    }
+    val isFavorite = movie.isFavorite // Directly bind to movie.isFavorite
 
     Column(
         modifier = Modifier
@@ -71,7 +69,6 @@ fun MovieCard(movie: MovieEntity, viewModel: MainViewModel) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-
                 .height(250.dp)
                 .clip(RoundedCornerShape(12.dp))
         ) {
@@ -87,19 +84,15 @@ fun MovieCard(movie: MovieEntity, viewModel: MainViewModel) {
             )
 
             // Heart Icon at the top left of the image
-            Icon(
-                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                contentDescription = "Favorite",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .zIndex(1f)
-                    .align(Alignment.TopEnd)
-                    .clickable {
-                        toggleFavorite() // Toggle favorite status when clicked
-                        Log.d("MovieCard", "Heart clicked for ${movie.fiche.title}")
-                    },
-                tint = Color.Red // Set the color of the heart icon
-            )
+            IconButton(
+                onClick = { onFavoriteClick(movie) } // Invoke the passed lambda
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = Color.Red // Set the color of the heart icon
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -136,5 +129,7 @@ fun MovieCard(movie: MovieEntity, viewModel: MainViewModel) {
         )
     }
 }
+
+
 
 

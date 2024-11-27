@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.MovieDao
@@ -38,12 +39,15 @@ class MainViewModel @Inject constructor(
     fun loadFavoriteMovies() {
         viewModelScope.launch {
             try {
-                favoriteMovies.value = movieDao.getFavoriteMovies() // Fetch favorite movies from DB
+                val favorites = movieDao.getFavoriteMovies()
+                favoriteMovies.value = favorites
+                Log.d("Database", "Favorite movies: ${favorites.map { it.fiche.title }}")
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("Database", "Error loading favorite movies", e)
             }
         }
     }
+
 
     fun toggleFavorite(movie: MovieEntity) {
         viewModelScope.launch {

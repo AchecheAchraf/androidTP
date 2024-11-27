@@ -1,4 +1,5 @@
 package com.example.myapplication
+
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Movie
@@ -39,13 +41,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
-    val movies by viewModel.movies.collectAsState()
+fun FavoriteMoviesScreen(navController: NavController, viewModel: MainViewModel) {
     val favoriteMovies by viewModel.favoriteMovies.collectAsState() // Collect favorites
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(true) {
-        viewModel.searchMovies()
         viewModel.loadFavoriteMovies() // Ensure favorites are loaded
     }
 
@@ -62,48 +62,17 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     title = {
                         Text(
-                            text = "Films",
+                            text = "Favoris",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     },
                     actions = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .background(Color.White, shape = MaterialTheme.shapes.medium)
-                                .height(49.dp)
-                        ) {
+                        // Back button on the right side of the top bar
+                        IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
-                                imageVector = Icons.Filled.Favorite,
-                                contentDescription = "Favorites",
-                                tint = Color.Red,
-                                modifier = Modifier
-                                    .padding(start = 8.dp, end = 8.dp)
-                                    .size(24.dp)
-                                    .clickable {
-                                        // Navigate to FavoriteMoviesScreen when clicked
-                                        navController.navigate("favorite")
-                                    }
-                            )
-                            OutlinedTextField(
-                                value = searchQuery,
-                                onValueChange = { query ->
-                                    searchQuery = query
-                                    viewModel.filterMovies(query.text)
-                                },
-                                placeholder = { Text("Nom du film") },
-                                modifier = Modifier
-                                    .width(220.dp)
-                                    .background(Color.White, shape = MaterialTheme.shapes.medium),
-                                singleLine = true,
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    focusedBorderColor = Color.Blue,
-                                    unfocusedBorderColor = Color.Gray,
-                                    textColor = Color.Black,
-                                    backgroundColor = Color.Transparent
-                                ),
-                                shape = MaterialTheme.shapes.medium
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.Black
                             )
                         }
                     }
@@ -153,6 +122,7 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
+            // Displaying the favorite movies
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 180.dp),
                 modifier = Modifier
@@ -160,20 +130,15 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
                     .padding(8.dp)
                     .height(350.dp)
             ) {
-                items(movies) { movie ->
-                    val isFavorite = favoriteMovies.any { it.id == movie.id.toString() } // Check favorite
-                    val movieEntity = MovieEntity(
-                        fiche = movie,
-                        id = movie.id.toString(),
-                        isFavorite = isFavorite
-                    )
+                items(favoriteMovies) { movie ->
                     MovieCard(
-                        movie = movieEntity,
-                        onFavoriteClick = { movieEntity ->
-                            if (movieEntity.isFavorite) {
-                                viewModel.removeFavoriteMovie(movieEntity.id)
+                        movie = movie, // Directly pass the Movie object
+                        onFavoriteClick = { movie ->
+                            // Handle favorite toggle
+                            if (movie.isFavorite) {
+                                viewModel.removeFavoriteMovie(movie.id.toString())
                             } else {
-                                viewModel.addFavoriteMovie(movieEntity)
+                                viewModel.addFavoriteMovie(movie)
                             }
                         },
                         viewModel = viewModel // You can pass this if needed for other operations
@@ -183,6 +148,4 @@ fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
         }
     }
 }
-
-
 

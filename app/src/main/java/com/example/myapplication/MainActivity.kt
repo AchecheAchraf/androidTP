@@ -77,6 +77,8 @@ class MainActivity : ComponentActivity() {
                     composable("movie") { MovieScreen(navController,viewmodel) }
                     composable("actor") { ActorScreen(navController,viewmodel) }
                     composable("serie") { SerieScreen(navController,viewmodel) }
+                    composable("favorite") { FavoriteMoviesScreen(navController, viewmodel) }  // Adding your Favorite screen
+
                 }
 
             }
