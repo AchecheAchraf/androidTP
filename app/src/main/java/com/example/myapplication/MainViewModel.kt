@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -13,7 +14,8 @@ class MainViewModel : ViewModel() {
     val series = MutableStateFlow<List<Serie>>(listOf())
 
     val apikey= "474915450c136f48794281389330d269"
-    val serieDetails = MutableStateFlow<Serie?>(null)
+
+    val playlist = MutableStateFlow<Playlist?>(null)
 
 
     val service = Retrofit.Builder()
@@ -27,6 +29,17 @@ class MainViewModel : ViewModel() {
     fun searchMovies(){
         viewModelScope.launch{
             movies.value = service.getFilms(apikey).results
+        }
+    }
+
+    fun fetchPlayList(): Playlist {
+        val moshi = Moshi.Builder().build()
+        return moshi.adapter(Playlist::class.java).fromJson(playlistjson)!!
+    }
+
+    fun getPlaylist(){
+        viewModelScope.launch{
+            playlist.value = fetchPlayList()
         }
     }
 
