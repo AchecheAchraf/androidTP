@@ -120,6 +120,12 @@ fun ActorScreen(navController: NavController, viewModel: MainViewModel) {
                     selected = currentRoute == "serie",
                     onClick = { navController.navigate("serie") } // Ensure this route exists
                 )
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Default.Tv, contentDescription = "Series") }, // Icon for Series
+                    label = { Text("Playlist") },
+                    selected = currentRoute == "playlist",
+                    onClick = { navController.navigate("playlist") } // Ensure this route exists
+                )
             }
         }
     ) { paddingValues ->

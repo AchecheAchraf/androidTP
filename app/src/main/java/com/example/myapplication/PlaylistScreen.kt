@@ -37,7 +37,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun MovieScreen(navController: NavController, viewModel: MainViewModel) {
+fun PlaylistScreen(navController: NavController, viewModel: MainViewModel) {
     // Assuming movies is a List of Result objects
     val movies by viewModel.movies.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }

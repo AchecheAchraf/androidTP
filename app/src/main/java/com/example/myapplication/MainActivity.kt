@@ -66,16 +66,18 @@ class MainActivity : ComponentActivity() {
                 @Serializable class profil
                 @Serializable class actor
                 @Serializable class serie
+                @Serializable class playlist
 
                 val navController = rememberNavController()
                 val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
                 val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-                NavHost(navController = navController, startDestination = "profil") {
+                NavHost(navController = navController, startDestination = "playlist") {
                     composable("profil") { ProfilScreen(windowSizeClass,navController) }
                     composable("movie") { MovieScreen(navController,viewmodel) }
                     composable("actor") { ActorScreen(navController,viewmodel) }
                     composable("serie") { SerieScreen(navController,viewmodel) }
+                    composable("playlist") { PlaylistScreen(navController,viewmodel) }
                 }
 
             }
