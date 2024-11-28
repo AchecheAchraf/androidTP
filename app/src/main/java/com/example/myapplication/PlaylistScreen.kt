@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.AsyncImage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -56,7 +57,7 @@ fun PlaylistScreen(navController: NavController, viewModel: MainViewModel) {
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     title = {
                         Text(
-                            text = "Films",
+                            text = "Playlist",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     },
@@ -69,7 +70,7 @@ fun PlaylistScreen(navController: NavController, viewModel: MainViewModel) {
                                 searchQuery = query
                                 viewModel.filterMovies(query.text) // Implement filtering
                             },
-                            placeholder = { Text("Nom du film") },
+                            placeholder = { Text("Nom du playlist") },
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .width(220.dp)
@@ -132,26 +133,15 @@ fun PlaylistScreen(navController: NavController, viewModel: MainViewModel) {
         }
     ) { paddingValues ->
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
-        ) {Log.d("MovieCard", "Image URL: $movies")
-
-
-// Use LazyVerticalGrid to display movies in 2 columns
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 180.dp), // Responsive grid
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-                    .height(350.dp)
-            ) {
-                items(movies) { movie ->
-                    Log.d("MovieScreen", "Movie: ${movie.title}")
-                    MovieCard(movie = movie,  viewModel = viewModel)
-
-                }
-            }
+        ) {
+            AsyncImage(
+                model = "file:///android_asset/images/2.jpg",
+                contentDescription = ""
+            )
         }
     }
 }
